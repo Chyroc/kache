@@ -82,8 +82,11 @@ func Decr(d *db.DB, args []string) *protcl.Message {
 	return accumulateBy(d, args[0], -1, true)
 }
 
+// incr 这个参数  和  v  有点重复
+//
 // accumulateBy will accumulate the value of key by given amount
 func accumulateBy(d *db.DB, key string, v int, incr bool) *protcl.Message {
+	// 找一个值，如果没有找到，按照调用看，会返回-1
 	val, found := d.GetIfNotSet(key, db.NewDataNode(db.TypeString, -1, strconv.Itoa(v)))
 
 	if !found {
@@ -94,6 +97,7 @@ func accumulateBy(d *db.DB, key string, v int, incr bool) *protcl.Message {
 		return protcl.NewMessage(nil, protcl.ErrWrongType{})
 	}
 
+	// 转成string ， 再转成 int
 	i, err := strconv.Atoi(util.ToString(val.Value))
 
 	if err != nil {
