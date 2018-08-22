@@ -40,9 +40,11 @@ import (
 var DB = db.NewDB()
 var dbCommand = &arch.DBCommand{}
 
+// 这个goroutine处理每一个客户端连接
 func handleConnection(conn net.Conn) {
 	defer conn.Close()
 
+	// 循环
 	for {
 		reader := protcl.NewReader(conn)
 
@@ -77,7 +79,9 @@ func handleConnection(conn net.Conn) {
 	ConnectedClients.logOnDisconnect(conn)
 }
 
+// 开始run 2级
 func Start(config config.AppConfig) {
+	// 监听tcp
 	addr := net.JoinHostPort(config.Host, strconv.Itoa(config.Port))
 	listener, err := net.Listen("tcp", addr)
 
@@ -88,7 +92,9 @@ func Start(config config.AppConfig) {
 
 	klogs.Logger.Infof("application is ready to accept connections on port %d", config.Port)
 
+	// 循环
 	for {
+		// 有客户端连接
 		conn, err := listener.Accept()
 
 		if err != nil {
@@ -97,6 +103,7 @@ func Start(config config.AppConfig) {
 			continue // we skip malformed user
 		}
 
+		// 记录连接诞生了
 		// client connected
 		ConnectedClients.logOnConnect(conn)
 
