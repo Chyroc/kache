@@ -43,14 +43,14 @@ var dbCommand = &arch.DBCommand{}
 
 // 这个goroutine处理每一个客户端连接
 func handleConnection(conn net.Conn) {
+	// TODO determine client type by first issued command to kache, this can improve performance
+
 	defer conn.Close()
 
 	reader := protcl.NewReader(conn)
 	writer := bufio.NewWriter(conn)
 
-	// 循环
 	for {
-		// TODO determine client type by first issued command to kache, this can improve performance
 		command, err := reader.ParseMessage()
 		if err != nil {
 			// if eof stop now
@@ -68,12 +68,7 @@ func handleConnection(conn net.Conn) {
 		// 执行客户端命令
 		message := dbCommand.Execute(DB, command.Name, command.Args)
 
-		if message.Err == nil {
-			writer.WriteString(message.RespReply())
-		} else {
-			writer.WriteString(protcl.RespError(message.Err))
-		}
-
+		writer.WriteString(message.RespReply())
 		writer.Flush()
 	}
 

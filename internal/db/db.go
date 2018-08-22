@@ -29,6 +29,7 @@ import (
 	"sync"
 )
 
+// db 存储数据的
 type DB struct {
 	file map[string]*DataNode
 	mux  sync.Mutex

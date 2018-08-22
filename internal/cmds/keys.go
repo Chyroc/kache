@@ -29,6 +29,7 @@ import (
 	"github.com/kasvith/kache/internal/protcl"
 )
 
+// exists 命令
 func Exists(d *db.DB, args []string) *protcl.Message {
 	if len(args) != 1 {
 		return protcl.NewMessage(nil, &protcl.ErrWrongNumberOfArgs{Cmd: "exists"})
@@ -37,6 +38,7 @@ func Exists(d *db.DB, args []string) *protcl.Message {
 	return protcl.NewMessage(protcl.NewIntegerReply(found), nil)
 }
 
+// del 命令
 func Del(d *db.DB, args []string) *protcl.Message {
 	deleted := d.Del(args)
 	return protcl.NewMessage(protcl.NewIntegerReply(deleted), nil)

@@ -32,6 +32,7 @@ import (
 	"github.com/kasvith/kache/pkg/util"
 )
 
+// get 命令
 func Get(d *db.DB, args []string) *protcl.Message {
 	if len(args) != 1 {
 		return protcl.NewMessage(nil, &protcl.ErrWrongNumberOfArgs{Cmd: "get"})

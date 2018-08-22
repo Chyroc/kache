@@ -51,6 +51,7 @@ type Message struct {
 	Err error
 }
 
+// 拼接返回的消息
 func NewMessage(rep Reply, err error) *Message {
 	return &Message{Reply: rep, Err: err}
 }
@@ -73,7 +74,11 @@ func RespError(Err error) string {
 	return fmt.Sprintf("-%s\r\n", err)
 }
 
+// string  交给writer
 func (msg *Message) RespReply() string {
+	if msg.Err != nil {
+		return RespError(msg.Err)
+	}
 	return msg.Reply.Reply()
 }
 
