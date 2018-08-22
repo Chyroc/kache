@@ -26,12 +26,14 @@ package kache
 
 import (
 	"fmt"
+	"os"
+
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+
 	"github.com/kasvith/kache/internal/config"
 	"github.com/kasvith/kache/internal/klogs"
 	"github.com/kasvith/kache/internal/srv"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
-	"os"
 )
 
 var verbose bool
@@ -125,7 +127,7 @@ func Execute() {
 
 // 这里是真的运行
 func runApp(cmd *cobra.Command, args []string) {
-fmt.Printf("开始 run app\n")
+	fmt.Printf("开始 run app\n")
 
 	// 解析配置
 	var appConfig config.AppConfig

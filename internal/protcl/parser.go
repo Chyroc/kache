@@ -28,11 +28,12 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"github.com/kasvith/kache/internal/config"
-	"github.com/kasvith/kache/pkg/util"
 	"io"
 	"strconv"
 	"strings"
+
+	"github.com/kasvith/kache/internal/config"
+	"github.com/kasvith/kache/pkg/util"
 )
 
 var (
@@ -59,6 +60,7 @@ func (e *ErrInvalidBlkStringLength) Error() string {
 	return fmt.Sprintf("invalid bulk string length, excepted %d processed %d", e.Excepted, e.Given)
 }
 
+// 包了一个reader的解析resp的结构体
 type Reader struct {
 	br *bufio.Reader
 }
@@ -67,6 +69,7 @@ func NewReader(r io.Reader) *Reader {
 	return &Reader{br: bufio.NewReader(r)}
 }
 
+// 从tcp读数据，然后parse为 resp command
 func (r *Reader) ParseMessage() (*RespCommand, error) {
 	return parse(r.br)
 }

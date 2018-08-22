@@ -26,15 +26,16 @@ package srv
 
 import (
 	"bufio"
+	"io"
+	"net"
+	"os"
+	"strconv"
+
 	"github.com/kasvith/kache/internal/arch"
 	"github.com/kasvith/kache/internal/config"
 	"github.com/kasvith/kache/internal/db"
 	"github.com/kasvith/kache/internal/klogs"
 	"github.com/kasvith/kache/internal/protcl"
-	"io"
-	"net"
-	"os"
-	"strconv"
 )
 
 var DB = db.NewDB()
@@ -44,14 +45,16 @@ var dbCommand = &arch.DBCommand{}
 func handleConnection(conn net.Conn) {
 	defer conn.Close()
 
+	reader := protcl.NewReader(conn)
+	writer := bufio.NewWriter(conn)
+
 	// 循环
 	for {
-		reader := protcl.NewReader(conn)
-
 		// TODO determine client type by first issued command to kache, this can improve performance
-		w := bufio.NewWriter(bufio.NewWriter(conn))
-		command, err := reader.ParseMessage()
 
+		// why???
+
+		command, err := reader.ParseMessage()
 		if err != nil {
 			// if eof stop now
 			if err == io.EOF {
@@ -60,20 +63,21 @@ func handleConnection(conn net.Conn) {
 
 			// anything else should be sent to client with prefix ERR
 			klogs.Logger.Debug(conn.RemoteAddr(), ": ", err.Error())
-			w.WriteString(protcl.RespError(err))
-			w.Flush()
+			writer.WriteString(protcl.RespError(err))
+			writer.Flush()
 			continue
 		}
 
+		// 执行客户端命令
 		message := dbCommand.Execute(DB, command.Name, command.Args)
 
 		if message.Err == nil {
-			w.WriteString(message.RespReply())
+			writer.WriteString(message.RespReply())
 		} else {
-			w.WriteString(protcl.RespError(message.Err))
+			writer.WriteString(protcl.RespError(message.Err))
 		}
 
-		w.Flush()
+		writer.Flush()
 	}
 
 	ConnectedClients.logOnDisconnect(conn)
