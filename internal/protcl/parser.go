@@ -96,6 +96,7 @@ func parse(r *bufio.Reader) (*RespCommand, error) {
 	// Clients require to send commands with CRLF
 	switch buf[0] {
 	case REP_ARR:
+		// 数组
 		// this is an array of redis strings
 		// arr len is in the buffer
 
@@ -205,6 +206,7 @@ func parseBlkString(r *bufio.Reader) (string, error) {
 	return string(str), nil
 }
 
+// 最后两个是 \r\n
 // does not return EOF as error
 func hasCRLF(buf []byte) error {
 	if len(buf) >= 2 && buf[len(buf)-1] == '\n' && buf[len(buf)-2] == '\r' {

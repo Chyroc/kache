@@ -51,9 +51,6 @@ func handleConnection(conn net.Conn) {
 	// 循环
 	for {
 		// TODO determine client type by first issued command to kache, this can improve performance
-
-		// why???
-
 		command, err := reader.ParseMessage()
 		if err != nil {
 			// if eof stop now
