@@ -39,6 +39,7 @@ func Exists(d *db.DB, args []string) *protcl.Message {
 }
 
 // del 命令
+// 这里应该有一个限制，至少有一个参数
 func Del(d *db.DB, args []string) *protcl.Message {
 	deleted := d.Del(args)
 	return protcl.NewMessage(protcl.NewIntegerReply(deleted), nil)

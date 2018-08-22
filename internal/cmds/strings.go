@@ -50,6 +50,7 @@ func Get(d *db.DB, args []string) *protcl.Message {
 	return protcl.NewMessage(protcl.NewBulkStringReply(false, util.ToString(val.Value)), nil)
 }
 
+// set
 func Set(d *db.DB, args []string) *protcl.Message {
 	if len(args) != 2 {
 		return protcl.NewMessage(nil, &protcl.ErrWrongNumberOfArgs{Cmd: "set"})
@@ -63,6 +64,7 @@ func Set(d *db.DB, args []string) *protcl.Message {
 	return protcl.NewMessage(protcl.NewSimpleStringReply("OK"), nil)
 }
 
+// 加1
 func Incr(d *db.DB, args []string) *protcl.Message {
 	if len(args) != 1 {
 		return protcl.NewMessage(nil, &protcl.ErrWrongNumberOfArgs{Cmd: "incr"})
@@ -71,6 +73,7 @@ func Incr(d *db.DB, args []string) *protcl.Message {
 	return accumulateBy(d, args[0], 1, true)
 }
 
+// 减1
 func Decr(d *db.DB, args []string) *protcl.Message {
 	if len(args) != 1 {
 		return protcl.NewMessage(nil, &protcl.ErrWrongNumberOfArgs{Cmd: "decr"})

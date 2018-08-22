@@ -33,6 +33,7 @@ const (
 	TypeSet     DataType = 4
 )
 
+// 存储的数据的 value
 type DataNode struct {
 	Type      DataType
 	ExpiresAt int

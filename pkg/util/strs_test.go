@@ -56,6 +56,6 @@ func TestSplitSpacesWithQuotes(t *testing.T) {
 func BenchmarkSplitSpacesWithQuotes(b *testing.B) {
 	testString := ` foo     bar "foo bar bar"    foo     bar "foo bar bar" foo     bar "foo bar bar" foo     bar "foo bar bar"`
 	for i := 0; i < b.N; i++ {
-		_, _ = SplitSpacesWithQuotes(testString)
+		SplitSpacesWithQuotes(testString)
 	}
 }

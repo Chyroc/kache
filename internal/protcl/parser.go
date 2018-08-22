@@ -36,6 +36,7 @@ import (
 	"github.com/kasvith/kache/pkg/util"
 )
 
+// 解析消息错误？
 var (
 	ErrParse             = errors.New("parse error")
 	ErrValueOutOfRange   = errors.New("value out of range")

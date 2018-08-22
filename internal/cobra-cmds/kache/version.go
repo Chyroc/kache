@@ -32,6 +32,7 @@ import (
 
 const APPVER = "1.0.0"
 
+// 看版本信息
 var VersionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Display application version",

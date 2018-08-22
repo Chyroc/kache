@@ -29,6 +29,7 @@ import (
 	"github.com/kasvith/kache/internal/protcl"
 )
 
+// ping
 func Ping(d *db.DB, args []string) *protcl.Message {
 	ll := len(args)
 	if ll > 1 {
