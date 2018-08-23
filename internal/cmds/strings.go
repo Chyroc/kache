@@ -34,10 +34,6 @@ import (
 
 // get 命令
 func Get(d *db.DB, args []string) *protcl.Message {
-	if len(args) != 1 {
-		return protcl.NewMessage(nil, &protcl.ErrWrongNumberOfArgs{Cmd: "get"})
-	}
-
 	val, err := d.Get(args[0])
 	if err != nil {
 		return protcl.NewMessage(nil, &protcl.ErrGeneric{Err: err})
@@ -52,10 +48,6 @@ func Get(d *db.DB, args []string) *protcl.Message {
 
 // set
 func Set(d *db.DB, args []string) *protcl.Message {
-	if len(args) != 2 {
-		return protcl.NewMessage(nil, &protcl.ErrWrongNumberOfArgs{Cmd: "set"})
-	}
-
 	key := args[0]
 	val := args[1]
 
@@ -66,19 +58,11 @@ func Set(d *db.DB, args []string) *protcl.Message {
 
 // 加1
 func Incr(d *db.DB, args []string) *protcl.Message {
-	if len(args) != 1 {
-		return protcl.NewMessage(nil, &protcl.ErrWrongNumberOfArgs{Cmd: "incr"})
-	}
-
 	return accumulateBy(d, args[0], 1, true)
 }
 
 // 减1
 func Decr(d *db.DB, args []string) *protcl.Message {
-	if len(args) != 1 {
-		return protcl.NewMessage(nil, &protcl.ErrWrongNumberOfArgs{Cmd: "decr"})
-	}
-
 	return accumulateBy(d, args[0], -1, true)
 }
 

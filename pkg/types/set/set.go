@@ -28,6 +28,7 @@ import (
 	"sync"
 )
 
+// set
 type Set struct {
 	m   map[string]int
 	mux *sync.RWMutex
@@ -38,7 +39,7 @@ func New() *Set {
 }
 
 func NewFromSlice(data []string) *Set {
-	m := make(map[string]int)
+	m := make(map[string]int, len(data))
 	for _, value := range data {
 		m[value] = 1
 	}
@@ -101,8 +102,8 @@ func (set *Set) Elems() []string {
 	return elems(set.m)
 }
 
-func duplicateMap(m map[string]int) map[string]int {
-	dup := make(map[string]int)
+func copyMap(m map[string]int) map[string]int {
+	dup := make(map[string]int, len(m))
 	for key, value := range m {
 		dup[key] = value
 	}
@@ -112,11 +113,11 @@ func duplicateMap(m map[string]int) map[string]int {
 
 func (set *Set) Diff(sets []Set) []string {
 	set.mux.RLock()
-	dup := duplicateMap(set.m)
+	dup := copyMap(set.m)
 	set.mux.RUnlock()
 
-	for i := 0; i < len(sets); i++ {
-		for _, key := range sets[i].Elems() {
+	for _, set := range sets {
+		for _, key := range set.Elems() {
 			delete(dup, key)
 		}
 	}
@@ -128,10 +129,10 @@ func (set *Set) DiffS(sets []Set) *Set {
 	set.mux.RLock()
 	defer set.mux.RUnlock()
 
-	dup := duplicateMap(set.m)
+	dup := copyMap(set.m)
 
-	for i := 0; i < len(sets); i++ {
-		for _, key := range sets[i].Elems() {
+	for _, set := range sets {
+		for _, key := range set.Elems() {
 			delete(dup, key)
 		}
 	}
@@ -141,19 +142,19 @@ func (set *Set) DiffS(sets []Set) *Set {
 
 func (set *Set) Exists(key string) int {
 	set.mux.RLock()
+	_, found := set.m[key]
 	defer set.mux.RUnlock()
 
-	if _, found := set.m[key]; found {
+	if found {
 		return 1
 	}
-
 	return 0
 }
 
 func Intersection(sets []Set) []string {
 	minSetIdx := 0
-	for i := 0; i < len(sets); i++ {
-		if sets[minSetIdx].Card() > sets[i].Card() {
+	for i, set := range sets {
+		if sets[minSetIdx].Card() > set.Card() {
 			minSetIdx = i
 		}
 	}
