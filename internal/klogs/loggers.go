@@ -39,6 +39,7 @@ import (
 	"github.com/kasvith/kache/internal/sys"
 )
 
+// 日志
 var Logger *logrus.Entry
 
 func InitLoggers(config config.AppConfig) {

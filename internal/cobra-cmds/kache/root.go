@@ -39,6 +39,7 @@ import (
 var verbose bool
 var cfgFile string
 
+// 主函数命令行
 var RootCmd = &cobra.Command{
 	Use:   "kache",
 	Short: "kache is a simple distributed in memory database",
@@ -46,6 +47,7 @@ var RootCmd = &cobra.Command{
 	Run:   runApp,
 }
 
+// 默认添加的
 func init() {
 	cobra.OnInitialize(initConfig)
 
@@ -75,7 +77,10 @@ func init() {
 	viper.BindPFlag("debug", RootCmd.PersistentFlags().Lookup("debug"))
 }
 
+// 初始化配置
 func initConfig() {
+	//fmt.Printf("RootCmd.Args %v\n",viper.AllSettings(),viper.Debug)
+
 	// Don't forget to read config either from cfgFile or from home directory!
 	loadingDefault := false
 	viper.SetConfigType("toml")
@@ -108,8 +113,10 @@ func initConfig() {
 	}
 }
 
+// 主函数
 func Execute() {
 	// Commands
+	// 添加版本命令行
 	RootCmd.AddCommand(VersionCmd)
 
 	if err := RootCmd.Execute(); err != nil {
@@ -118,7 +125,11 @@ func Execute() {
 	}
 }
 
+// 这里是真的运行
 func runApp(cmd *cobra.Command, args []string) {
+	fmt.Printf("开始 run app\n")
+
+	// 解析配置
 	var appConfig config.AppConfig
 	if err := viper.Unmarshal(&appConfig); err != nil {
 		klogs.PrintErrorAndExit(err, 2)

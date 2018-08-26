@@ -24,6 +24,7 @@
 
 package config
 
+// 配置
 type AppConfig struct {
 	Port              int
 	Host              string

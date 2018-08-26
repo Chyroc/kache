@@ -29,11 +29,14 @@ import (
 	"sync"
 )
 
+// db 存储数据的
+// 一个锁 + 一个map
 type DB struct {
 	file map[string]*DataNode
 	mux  sync.Mutex
 }
 
+// key 不存在 的错误
 type KeyNotFoundError struct {
 	key string
 }
@@ -42,10 +45,12 @@ func (e *KeyNotFoundError) Error() string {
 	return fmt.Sprintf("%s not found", e.key)
 }
 
+// new
 func NewDB() *DB {
 	return &DB{file: make(map[string]*DataNode)}
 }
 
+// get，没有报 KeyNotFoundError
 func (db *DB) Get(key string) (*DataNode, error) {
 	db.mux.Lock()
 	defer db.mux.Unlock()
@@ -56,12 +61,14 @@ func (db *DB) Get(key string) (*DataNode, error) {
 	return nil, &KeyNotFoundError{key: key}
 }
 
+// set，
 func (db *DB) Set(key string, val *DataNode) {
 	db.mux.Lock()
 	db.file[key] = val
 	db.mux.Unlock()
 }
 
+// 有，就返回；否则，设置一个
 func (db *DB) GetIfNotSet(key string, val *DataNode) (value *DataNode, found bool) {
 	db.mux.Lock()
 	defer db.mux.Unlock()
@@ -74,6 +81,7 @@ func (db *DB) GetIfNotSet(key string, val *DataNode) (value *DataNode, found boo
 	return val, false
 }
 
+// 删除 key
 func (db *DB) Del(keys []string) int {
 	db.mux.Lock()
 	del := 0
@@ -88,6 +96,7 @@ func (db *DB) Del(keys []string) int {
 	return del
 }
 
+// 判断存在
 func (db *DB) Exists(key string) int {
 	db.mux.Lock()
 	defer db.mux.Unlock()

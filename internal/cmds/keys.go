@@ -29,11 +29,14 @@ import (
 	"github.com/kasvith/kache/internal/protcl"
 )
 
+// exists 命令
 func Exists(d *db.DB, args []string) *protcl.Message {
 	found := d.Exists(args[0])
 	return protcl.NewMessage(protcl.NewIntegerReply(found), nil)
 }
 
+// del 命令
+// 这里应该有一个限制，至少有一个参数
 func Del(d *db.DB, args []string) *protcl.Message {
 	deleted := d.Del(args)
 	return protcl.NewMessage(protcl.NewIntegerReply(deleted), nil)

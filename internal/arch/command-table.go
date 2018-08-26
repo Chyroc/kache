@@ -39,6 +39,7 @@ type Command struct {
 	MaxArgs        int // -1 ~ +inf, -1 mean infinite
 }
 
+// 支持的命令
 var CommandTable = map[string]Command{
 	// server
 	"ping": {ModifyKeySpace: false, Fn: cmds.Ping, MinArgs: 0, MaxArgs: 1},
@@ -65,6 +66,7 @@ func getCommand(cmd string) (*Command, error) {
 	return nil, &protcl.ErrUnknownCommand{Cmd: cmd}
 }
 
+// 执行命令
 // Execute executes a single command on the given database
 func (DBCommand) Execute(db *db.DB, cmd string, args []string) *protcl.Message {
 	command, err := getCommand(cmd)

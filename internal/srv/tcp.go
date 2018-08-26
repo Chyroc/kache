@@ -41,16 +41,17 @@ import (
 var DB = db.NewDB()
 var dbCommand = &arch.DBCommand{}
 
+// 这个goroutine处理每一个客户端连接
 func handleConnection(conn net.Conn) {
 	// TODO determine client type by first issued command to kache, this can improve performance
 
+	defer conn.Close()
+
 	reader := protcl.NewReader(conn)
 	writer := bufio.NewWriter(conn)
-	defer conn.Close()
 
 	for {
 		command, err := reader.ParseMessage()
-
 		if err != nil {
 			// if eof stop now
 			if err == io.EOF {
@@ -64,21 +65,19 @@ func handleConnection(conn net.Conn) {
 			continue
 		}
 
+		// 执行客户端命令
 		message := dbCommand.Execute(DB, command.Name, command.Args)
 
-		if message.Err == nil {
-			writer.WriteString(message.RespReply())
-		} else {
-			writer.WriteString(protcl.RespError(message.Err))
-		}
-
+		writer.WriteString(message.RespReply())
 		writer.Flush()
 	}
 
 	ConnectedClients.logOnDisconnect(conn)
 }
 
+// 开始run 2级
 func Start(config config.AppConfig) {
+	// 监听tcp
 	addr := net.JoinHostPort(config.Host, strconv.Itoa(config.Port))
 	listener, err := net.Listen("tcp", addr)
 
@@ -89,7 +88,9 @@ func Start(config config.AppConfig) {
 
 	klogs.Logger.Infof("application is ready to accept connections on port %d", config.Port)
 
+	// 循环
 	for {
+		// 有客户端连接
 		conn, err := listener.Accept()
 
 		if err != nil {
@@ -98,6 +99,7 @@ func Start(config config.AppConfig) {
 			continue // we skip malformed user
 		}
 
+		// 记录连接诞生了
 		// client connected
 		ConnectedClients.logOnConnect(conn)
 

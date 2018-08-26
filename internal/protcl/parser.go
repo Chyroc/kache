@@ -36,6 +36,7 @@ import (
 	"github.com/kasvith/kache/pkg/util"
 )
 
+// 解析消息错误？
 var (
 	ErrParse             = errors.New("parse error")
 	ErrValueOutOfRange   = errors.New("value out of range")
@@ -60,6 +61,7 @@ func (e *ErrInvalidBlkStringLength) Error() string {
 	return fmt.Sprintf("invalid bulk string length, excepted %d processed %d", e.Excepted, e.Given)
 }
 
+// 包了一个reader的解析resp的结构体
 type Reader struct {
 	br *bufio.Reader
 }
@@ -68,6 +70,7 @@ func NewReader(r io.Reader) *Reader {
 	return &Reader{br: bufio.NewReader(r)}
 }
 
+// 从tcp读数据，然后parse为 resp command
 func (r *Reader) ParseMessage() (*RespCommand, error) {
 	return parse(r.br)
 }
@@ -94,6 +97,7 @@ func parse(r *bufio.Reader) (*RespCommand, error) {
 	// Clients require to send commands with CRLF
 	switch buf[0] {
 	case REP_ARR:
+		// 数组
 		// this is an array of redis strings
 		// arr len is in the buffer
 
@@ -203,6 +207,7 @@ func parseBlkString(r *bufio.Reader) (string, error) {
 	return string(str), nil
 }
 
+// 最后两个是 \r\n
 // does not return EOF as error
 func hasCRLF(buf []byte) error {
 	if len(buf) >= 2 && buf[len(buf)-1] == '\n' && buf[len(buf)-2] == '\r' {

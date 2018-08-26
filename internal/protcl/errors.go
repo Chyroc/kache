@@ -26,6 +26,9 @@ package protcl
 
 import "fmt"
 
+// 协议错误
+
+// 转 int 错误
 type ErrCastFailedToInt struct {
 	Val interface{}
 }
@@ -34,6 +37,7 @@ func (e *ErrCastFailedToInt) Error() string {
 	return fmt.Sprintf("%s: error casting %v to int", ERR, e.Val)
 }
 
+// 错误的类型
 type ErrWrongType struct {
 }
 
@@ -41,6 +45,7 @@ func (ErrWrongType) Error() string {
 	return fmt.Sprintf("%s: invalid operation against key holding invalid type of value", WRONGTYP)
 }
 
+// 给 error 包一层
 type ErrGeneric struct {
 	Err error
 }
@@ -49,6 +54,7 @@ func (e *ErrGeneric) Error() string {
 	return fmt.Sprintf("%s: %s", ERR, e.Err)
 }
 
+// 参数个数错误
 type ErrWrongNumberOfArgs struct {
 	Cmd string
 }
@@ -57,6 +63,7 @@ func (e *ErrWrongNumberOfArgs) Error() string {
 	return fmt.Sprintf("%s: %s has wrong number of arguments", WRONGTYP, e.Cmd)
 }
 
+// 未知的command 错误
 type ErrUnknownCommand struct {
 	Cmd string
 }

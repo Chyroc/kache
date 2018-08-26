@@ -44,7 +44,7 @@ func ToString(i interface{}) string {
 
 // SplitSpacesWithQuotes will split the string by spaces and preserve texts inside " " marks
 // error is returned when an unbalanced quote was found in the string
-
+//
 // TODO: need to handle special cases like \" \'
 func SplitSpacesWithQuotes(s string) ([]string, error) {
 	var ret []string
